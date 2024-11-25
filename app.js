@@ -16,9 +16,7 @@ const serviceAccount = require("./config/serviceAccount");
 const authMiddleware = require("./middlewares/authMiddleware");
 const errorHandler = require("./middlewares/errorHandler");
 
-
 dbConnection();
-
 
 app.use(cors());
 app.use(express.json());
@@ -37,5 +35,5 @@ app.use((req, res) => res.status(404).json({ error: "Página no encontrada" }));
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}/`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
