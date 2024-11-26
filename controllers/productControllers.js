@@ -1,4 +1,4 @@
-const Product = require("../models/ProductModel");
+const Product = require("../models/productModel");
 
 exports.getAllProducts = async (req, res) => {
   const products = await Product.find();
