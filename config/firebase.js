@@ -5,4 +5,5 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
+console.log("Firebase inicializado correctamente.");
 module.exports = admin;
