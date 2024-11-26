@@ -1,9 +1,12 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccount.js");
+const serviceAccount = require("./serviceAccount");
+
+if (!serviceAccount) {
+  throw new Error("Credenciales de Firebase inválidas o no configuradas.");
+}
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
-console.log("Firebase inicializado correctamente.");
-module.exports = admin;
+console.log("Firebase conectado exitosamente");
