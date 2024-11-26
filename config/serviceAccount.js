@@ -1,4 +1,12 @@
-require("dotenv").config() 
+require("dotenv").config();
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+
+console.log(serviceAccount);
+
+module.exports = serviceAccount;
+
+/*require("dotenv").config() 
 const serviceAccount = {
     "type":process.env.FIREBASE_TYPE,
     "project_id":process.env.FIREBASE_PROJECT_ID,
@@ -16,3 +24,4 @@ const serviceAccount = {
 console.log(serviceAccount)
 
 module.exports = serviceAccount
+*/
