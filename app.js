@@ -1,4 +1,4 @@
-require("dotenv").config(); // Cargar variables de entorno al inicio
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -11,7 +11,6 @@ const errorHandler = require("./middlewares/errorHandler");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Conexión a la base de datos
 dbConnection();
 
 // Middleware
@@ -21,18 +20,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(methodOverride("_method"));
 
-// Rutas
+app.get("/", (req, res) => {
+  res.send("Bienvenido a la API de productos. Usa /api/auth o /api/products para interactuar.");
+});
+
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docs));
 
-// Manejo de errores y rutas no encontradas
 app.use((req, res) => res.status(404).json({ error: "Página no encontrada" }));
 app.use(errorHandler);
 
-// Servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
