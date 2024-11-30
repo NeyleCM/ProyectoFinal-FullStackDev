@@ -1,4 +1,29 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/UserModel");
+
+const verifyToken = async (req, res, next) => {
+  const token = req.headers["authorization"];
+  if (!token) {
+    return res.status(403).json({ error: "Token requerido" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id); 
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    req.user = user; // Añade usuario al objeto de solicitud
+    next();
+  } catch (err) {
+    res.status(401).json({ error: "Token inválido o expirado" });
+  }
+};
+
+module.exports = verifyToken;
+
+/*
+const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -17,7 +42,7 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports = verifyToken;
-
+*/
 /*
 const admin = require('../config/firebase');
 

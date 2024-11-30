@@ -5,13 +5,15 @@ const {
   deleteProduct,
   createProduct,
   getAllProducts,
+  updateProduct
 } = require("../controllers/productControllers");
 const verifyToken = require("../middlewares/authMiddleware.js");
 
-// Rutas para productos
-router.get("/", getAllProducts);                
-router.get("/:category", verifyToken, getProductsByCategory); 
-router.post("/", verifyToken, createProduct);             
-router.delete("/:id/delete", verifyToken, deleteProduct);    
+// Rutas CRUD para productos
+router.get("/", getAllProducts); // Obtener todos los productos
+router.get("/:category", getProductsByCategory); // Obtener productos por categoría
+router.post("/", verifyToken, createProduct); // Crear producto
+router.put("/:id", verifyToken, updateProduct); // Actualizar producto
+router.delete("/:id", verifyToken, deleteProduct); // Eliminar producto
 
 module.exports = router; 

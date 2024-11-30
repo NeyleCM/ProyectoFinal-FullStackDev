@@ -1,5 +1,6 @@
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
@@ -30,7 +31,7 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, "your_jwt_secret", {
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET,/*"your_jwt_secret",*/ {
       expiresIn: "1h",
     });
     res.status(200).json({ message: "Inicio de sesión exitoso", token });
@@ -40,7 +41,25 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+const getUserDetails = async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Usuario no autenticado" });
+    }
+
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al obtener información del usuario" });
+  }
+};
+
+module.exports = { login, register, getUserDetails };
 
 /*
 const jwt = require('jsonwebtoken');
