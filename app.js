@@ -37,9 +37,10 @@ app.use(methodOverride("_method"));
 //   }
 // });
 
-app.use("/api", productRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docs));
+console.log("Rutas de productos registradas en /api/products");
 
 // Ruta principal '/'
 app.get("/", getAllProducts)

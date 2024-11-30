@@ -1,48 +1,45 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/UserModel");
+const admin = require("../config/firebase"); 
 
 const verifyToken = async (req, res, next) => {
-  const token = req.headers["authorization"];
-  if (!token) {
-    return res.status(403).json({ error: "Token requerido" });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No autorizado" });
   }
 
+  const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id); 
-    if (!user) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
-    }
-    req.user = user; // Añade usuario al objeto de solicitud
+    const decodedToken = await admin.auth().verifyIdToken(token); 
+    req.user = decodedToken; 
     next();
-  } catch (err) {
-    res.status(401).json({ error: "Token inválido o expirado" });
+  } catch (error) {
+    res.status(401).json({ error: "Token inválido" });
   }
 };
 
 module.exports = verifyToken;
 
 /*
-const jwt = require("jsonwebtoken");
+const admin = require('../config/firebase');
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Acceso no autorizado" });
+const verifyToken = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]; // Lee el token desde los headers
+  if (!token) {
+    return res.status(401).json({ error: 'Token no proporcionado' });
   }
 
-  const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, "your_jwt_secret");
-    req.user = decoded; // Incluye el usuario decodificado en la solicitud
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken; // Almacena el usuario decodificado
     next();
-  } catch (err) {
-    return res.status(403).json({ error: "Token inválido" });
+  } catch (error) {
+    res.status(401).json({ error: 'Token inválido o expirado' });
   }
 };
 
 module.exports = verifyToken;
 */
+
 /*
 const admin = require('../config/firebase');
 
@@ -62,26 +59,4 @@ const verifyToken = async (req, res, next) => {
 };
 
 module.exports = verifyToken;
-*/
-
-/*
-const admin = require("../config/firebase");
-
-const authMiddleware = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Leer el token del encabezado Authorization
-
-  if (!token) {
-    return res.status(401).json({ error: "No token provided" });
-  }
-
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(token); // Verificar el token
-    req.user = decodedToken; // Agregar la información del usuario al request
-    next(); // Continuar al siguiente middleware o ruta
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-  }
-};
-
-module.exports = authMiddleware;
 */

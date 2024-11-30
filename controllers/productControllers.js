@@ -18,11 +18,11 @@ const Product = require("../models/productModel");
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
-    // Si no hay productos, devolver un mensaje adecuado
+    // Devuelve mensaje si no hay productos
     if (!products || products.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos" });
     }
-    return res.status(200).json(products); // Devolvemos los productos
+    return res.status(200).json(products); // Productos
   } catch (error) {
     console.error("Error al obtener los productos:", error.message);
     return res.status(500).json({ error: "Error al obtener los productos" });
@@ -52,7 +52,6 @@ exports.getProduct = async (req, res, next) => {
     next(error); // Pasa el error al middleware centralizado
   }
 };
-
 
 exports.getProductsByCategory = async (req, res) => {
   try {
@@ -86,14 +85,12 @@ const productSchema = Joi.object({
 
 exports.createProduct = async (req, res) => {
   try {
-    // Validar datos
-    const { error } = productSchema.validate(req.body);
+    const { error } = productSchema.validate(req.body);// Validar datos
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    // Crear y guardar producto
-    const newProduct = new Product(req.body);
+    const newProduct = new Product(req.body);    // Crear y guardar producto
     const savedProduct = await newProduct.save();
     return res.status(201).json(savedProduct);
   } catch (error) {

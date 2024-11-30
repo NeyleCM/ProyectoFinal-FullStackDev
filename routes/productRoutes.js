@@ -9,7 +9,7 @@ const {
 } = require("../controllers/productControllers");
 const verifyToken = require("../middlewares/authMiddleware.js");
 
-// Rutas CRUD para productos
+// CRUD productos
 router.get("/", getAllProducts); // Obtener todos los productos
 router.get("/:category", getProductsByCategory); // Obtener productos por categoría
 router.post("/", verifyToken, createProduct); // Crear producto
