@@ -74,17 +74,16 @@ const productSchema = Joi.object({
   price: Joi.number().positive().required(),
   stock: Joi.number().integer().min(0).required(),
   image: Joi.string().uri().required(),
-  size: Joi.string().required(),
 });
 
 exports.createProduct = async (req, res) => {
   try {
-    const { error } = productSchema.validate(req.body);// Validar datos
+    const { error } = productSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    const newProduct = new Product(req.body);    // Crear y guardar producto
+    const newProduct = new Product(req.body);    
     const savedProduct = await newProduct.save();
     return res.status(201).json(savedProduct);
   } catch (error) {
