@@ -1,11 +1,6 @@
 const Product = require("../models/productModel");
 
 // exports.getAllProducts = async (req, res) => {
-//   const products = await Product.find();
-//   res.json(products);
-// };
-
-// exports.getAllProducts = async (req, res) => {
 //   try {
 //     const products = await Product.find();
 //     res.json(products);
@@ -18,11 +13,10 @@ const Product = require("../models/productModel");
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
-    // Devuelve mensaje si no hay productos
     if (!products || products.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos" });
     }
-    return res.status(200).json(products); // Productos
+    return res.status(200).json(products); 
   } catch (error) {
     console.error("Error al obtener los productos:", error.message);
     return res.status(500).json({ error: "Error al obtener los productos" });
@@ -49,7 +43,7 @@ exports.getProduct = async (req, res, next) => {
     }
     res.json(product);
   } catch (error) {
-    next(error); // Pasa el error al middleware centralizado
+    next(error); 
   }
 };
 
