@@ -11,11 +11,11 @@ const {
 const verifyToken = require("../middlewares/authMiddleware.js");
 
 // CRUD productos
-router.get("/", getAllProducts); // Obtener todos los productos
-router.get("/:category", getProductsByCategory); // Obtener productos por categoría
-router.get("/:id", verifyToken, getProduct); 
-router.post("/", verifyToken, createProduct); // Crear producto
-router.put("/:id", verifyToken, updateProduct); // Actualizar producto
-router.delete("/:id", verifyToken, deleteProduct); // Eliminar producto
+router.get("/", getAllProducts);
+router.get("/category/:category", getProductsByCategory); 
+router.get("/:id", getProduct); 
+router.post("/", verifyToken, createProduct); 
+router.put("/:id", verifyToken, updateProduct); 
+router.delete("/:id", verifyToken, deleteProduct);
 
 module.exports = router; 

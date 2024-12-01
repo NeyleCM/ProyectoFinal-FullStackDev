@@ -48,8 +48,8 @@ exports.getProduct = async (req, res, next) => {
 };
 
 exports.getProductsByCategory = async (req, res) => {
+  const { category } = req.params;
   try {
-    const { category } = req.params;
     const products = await Product.find({ category });
     if (products.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos en esta categoría" });
