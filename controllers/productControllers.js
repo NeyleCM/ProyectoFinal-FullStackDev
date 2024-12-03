@@ -1,15 +1,5 @@
 const Product = require("../models/productModel");
 
-// exports.getAllProducts = async (req, res) => {
-//   try {
-//     const products = await Product.find();
-//     res.json(products);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Error al obtener los productos" });
-//   }
-// };
-
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -23,7 +13,6 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// Función reutilizable
 exports.fetchAllProducts = async () => {
   try {
     return await Product.find();
@@ -60,11 +49,6 @@ exports.getProductsByCategory = async (req, res) => {
     return res.status(500).json({ error: "Error al obtener productos" });
   }
 };
-// exports.getProductsByCategory = async (req, res) => {
-//   const { category } = req.params;
-//   const products = await Product.find({ category });
-//   res.json(products);
-// };
 
 const Joi = require("joi");
 
@@ -91,35 +75,6 @@ exports.createProduct = async (req, res) => {
     return res.status(500).json({ error: "Error al crear el producto" });
   }
 };
-/*
-exports.createProduct = async (req, res) => {
-  try {
-    // Validación de campos necesarios
-    const { name, category, price, stock, image, size } = req.body;
-    if (!name || !category || !price || !stock || !image || !size) {
-      return res.status(400).json({ error: "Todos los campos son requeridos" });
-    }
-    
-    const newProduct = new Product({
-      name,
-      category,
-      price,
-      stock,
-      image,
-      size,
-    });
-
-    // Se guarda el producto en la base de datos
-    const savedProduct = await newProduct.save();
-    return res.status(201).json(savedProduct);
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Error al crear el producto" });
-  }
-};
-
-*/
 
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
@@ -131,9 +86,8 @@ exports.updateProduct = async (req, res) => {
       category,
       price,
       stock,
-      image,
-      size,
-    }, { new: true }); // `new: true` devuelve el producto actualizado
+      image
+    }, { new: true }); 
 
     if (!updatedProduct) {
       return res.status(404).json({ error: "Producto no encontrado" });
@@ -147,7 +101,12 @@ exports.updateProduct = async (req, res) => {
 };
 
 exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
+  try { 
+    const { id } = req.params.id;
   await Product.findByIdAndDelete(id);
-  res.status(204).send();
+  return res.status(200).json({ message: "Producto eliminado con éxito" });
+  }  catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    return res.status(500).json({ message: "Error en la eliminación del producto" });
+  }
 };
