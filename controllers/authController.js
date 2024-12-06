@@ -47,8 +47,8 @@ const login = async (req, res) => {
       message: "Inicio de sesión exitoso",
       token,
       user: {
-        uid: user.uid,
-        email: user.email,
+      uid: user.uid,
+      email: user.email,
       }
     });
   } catch (error) {
