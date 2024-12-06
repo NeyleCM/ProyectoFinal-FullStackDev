@@ -8,9 +8,11 @@ const serviceAccount = {
 };
 
 if (!admin.apps.length) {
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+} else {
+  admin.app(); 
 }
 
 module.exports = admin;
