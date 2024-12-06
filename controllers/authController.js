@@ -1,5 +1,5 @@
 const admin = require("../config/firebase"); 
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const User = require("../models/UserModel");
 
 const register = async (req, res) => {
