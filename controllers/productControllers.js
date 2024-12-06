@@ -102,6 +102,21 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   const { id } = req.params;
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    res.status(200).json({ message: "Producto eliminado con éxito" });
+  } catch (error) {
+    console.error("Error en la eliminación del producto:", error);
+    return res.status(500).json({ error: "Error en la eliminación del producto" });
+  }
+};
+/*
+exports.deleteProduct = async (req, res) => {
+  const { id } = req.params;
   await Product.findByIdAndDelete(id);
   res.status(204).send();
 };
+*/

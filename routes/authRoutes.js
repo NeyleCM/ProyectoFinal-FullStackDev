@@ -11,5 +11,4 @@ router.post("/login", login);
 router.post("/register", register);
 router.get("/me", verifyToken, getUserDetails);
 
-
 module.exports = router;
