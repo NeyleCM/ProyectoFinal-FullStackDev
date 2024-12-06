@@ -1,20 +1,25 @@
 const admin = require("../config/firebase"); 
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email y contraseña son requeridos' });
+  }
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email y contraseña son requeridos" });
-    }
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    const newUser = new User({ email, password });
+    const newUser = new User({
+      email: email,
+      firebaseUid: user.uid,
+    });
+
     await newUser.save();
 
-    res.status(201).json({ message: "Usuario registrado con éxito", user: user });
+    res.status(201).json({ message: 'Usuario registrado con éxito', user });
   } catch (error) {
     console.error("Error al registrar el usuario:", error.message);
     res.status(500).json({ error: "Error al registrar el usuario" });
@@ -28,12 +33,20 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Email y contraseña son requeridos" });
     }
 
+    const auth = getAuth();
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     const token = await user.getIdToken();
 
-    res.status(200).json({ message: "Inicio de sesión exitoso", token, user });
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      token,
+      user: {
+        uid: user.uid,
+        email: user.email,
+      }
+    });
   } catch (error) {
     console.error("Error al iniciar sesión:", error.message);
     res.status(401).json({ error: "Credenciales inválidas" });
@@ -52,7 +65,9 @@ const getUserDetails = async (req, res) => {
     const userId = decodedToken.uid;
 
     // Opcional: Detalles del usuario en la base de datos.
-    res.status(200).json({ message: "Usuario autenticado", userId });
+    res.status(200).json({ 
+      message: "Usuario autenticado", 
+      userId });
   } catch (error) {
     console.error("Error al obtener detalles del usuario:", error.message);
     res.status(500).json({ error: "Error al obtener información del usuario" });
