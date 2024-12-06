@@ -1,3 +1,68 @@
+const admin = require("../config/firebase"); 
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const { auth } = require("../services/firebase"); 
+
+const register = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email y contraseña son requeridos" });
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const newUser = new User({ email, password });
+    await newUser.save();
+
+    res.status(201).json({ message: "Usuario registrado con éxito", user: user });
+  } catch (error) {
+    console.error("Error al registrar el usuario:", error.message);
+    res.status(500).json({ error: "Error al registrar el usuario" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email y contraseña son requeridos" });
+    }
+
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const token = await user.getIdToken();
+
+    res.status(200).json({ message: "Inicio de sesión exitoso", token, user });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error.message);
+    res.status(401).json({ error: "Credenciales inválidas" });
+  }
+};
+
+const getUserDetails = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1]; 
+
+    if (!token) {
+      return res.status(401).json({ error: "Token no proporcionado" });
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(token); 
+    const userId = decodedToken.uid;
+
+    // Opcional: Detalles del usuario en la base de datos.
+    res.status(200).json({ message: "Usuario autenticado", userId });
+  } catch (error) {
+    console.error("Error al obtener detalles del usuario:", error.message);
+    res.status(500).json({ error: "Error al obtener información del usuario" });
+  }
+};
+
+module.exports = { login, register, getUserDetails };
+
+/*
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -31,7 +96,9 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET,/*"your_jwt_secret",*/ {
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET,/*"your_jwt_secret",*/ 
+    
+    /* {
       expiresIn: "1h",
     });
     res.status(200).json({ message: "Inicio de sesión exitoso", token });
@@ -60,52 +127,4 @@ const getUserDetails = async (req, res) => {
 };
 
 module.exports = { login, register, getUserDetails };
-
-/*
-const jwt = require('jsonwebtoken');
-
-const login = (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
-
-  const user = { id: 1, email };
-  const token = jwt.sign(user, 'your_jwt_secret', { expiresIn: '1h' });
-
-  res.status(200).json({ message: 'Login successful', token });
-};
-
-const register = (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
-    res.status(201).json({ message: 'User registered successfully' });
-  };
-  
-
-module.exports = { login, register };
-*/
-
-/*
-const login = (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
-    }
-    // Aquí iría la lógica para validar al usuario
-    res.status(200).json({ message: 'Login successful' });
-};
-
-const register = (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
-    }
-    // Aquí iría la lógica para registrar al usuario
-    res.status(201).json({ message: 'User registered successfully' });
-};
-
-module.exports = { login, register };
 */
