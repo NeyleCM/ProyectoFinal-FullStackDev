@@ -2,11 +2,12 @@ const admin = require("../config/firebase");
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email y contraseña son requeridos' });
-  }
+
   try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email y contraseña son requeridos' });
+    }
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -18,7 +19,9 @@ const register = async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: 'Usuario registrado con éxito', user });
+    const token = await user.getIdToken();
+
+    res.status(201).json({ message: 'Usuario registrado con éxito', token });
   } catch (error) {
     console.error("Error al registrar el usuario:", error.message);
     res.status(500).json({ error: "Error al registrar el usuario" });
