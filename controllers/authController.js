@@ -1,6 +1,5 @@
 const admin = require("../config/firebase"); 
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
-const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
