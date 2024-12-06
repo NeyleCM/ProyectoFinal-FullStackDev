@@ -43,8 +43,8 @@ const register = async (req, res) => {
 
     res.status(201).json({ message: 'Usuario registrado con éxito', token });
   } catch (error) {
-    console.error("Error al registrar el usuario:", error.message);
-    res.status(500).json({ error: "Error al registrar el usuario" });
+    console.error("Error al registrar el usuario:", error);
+    res.status(500).json({ error: "Error al registrar el usuario", message: error.message });
   }
 };
 
