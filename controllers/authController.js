@@ -1,15 +1,17 @@
 const admin = require("../config/firebase"); 
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const User = require("../models/UserModel");
 
 const register = async (req, res) => {
-
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
+  
     if (!email || !password) {
       return res.status(400).json({ error: 'Email y contraseña son requeridos' });
     }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    try {
+
+    const userCredential = await createUserWithEmailAndPassword(admin.auth(), email, password);
     const user = userCredential.user;
 
     const newUser = new User({
