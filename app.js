@@ -23,26 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(methodOverride("_method"));
 
-// app.get("/", (req, res) => {
-//   res.send("Bienvenido a la API de productos. Usa /api/auth o /api/products para interactuar.");
-// });
-
-// app.get("/", async (req, res) => {
-//   try {
-//     const products = await getAllProducts();
-//     res.status(200).json(products);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Error al obtener los productos" });
-//   }
-// });
 
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docs));
 console.log("Rutas de productos registradas en /api/products");
 
-// Ruta principal '/'
 app.get("/", getAllProducts)
 
 app.use((req, res) => res.status(404).json({ error: "Página no encontrada" }));

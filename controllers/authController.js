@@ -1,7 +1,54 @@
+const bcrypt = require('bcryptjs');
 const admin = require("../config/firebase"); 
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const User = require("../models/UserModel");
 
+const register = async (req, res) => {
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+
+    if (!name || !email || !password || !confirmPassword) {
+      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Las contraseñas no coinciden' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Este correo electrónico ya está registrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword, 
+      firebaseUid: user.uid, 
+    });
+
+    await newUser.save();
+
+    const token = await user.getIdToken();
+
+    res.status(201).json({ message: 'Usuario registrado con éxito', token });
+  } catch (error) {
+    console.error("Error al registrar el usuario:", error.message);
+    res.status(500).json({ error: "Error al registrar el usuario" });
+  }
+};
+
+/*
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -29,7 +76,7 @@ const register = async (req, res) => {
     res.status(500).json({ error: "Error al registrar el usuario" });
   }
 };
-
+*/
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -68,7 +115,6 @@ const getUserDetails = async (req, res) => {
     const decodedToken = await admin.auth().verifyIdToken(token); 
     const userId = decodedToken.uid;
 
-    // Opcional: Detalles del usuario en la base de datos.
     res.status(200).json({ 
       message: "Usuario autenticado", 
       userId });
