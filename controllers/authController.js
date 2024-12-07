@@ -1,4 +1,3 @@
-const admin = require("../config/firebase"); 
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const User = require("../models/UserModel");
 
@@ -23,22 +22,19 @@ const register = async (req, res) => {
       return res.status(400).json({ error: 'Este correo electrónico ya está registrado' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const auth = getAuth();
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    const token = await user.getIdToken();
 
     const newUser = new User({
       name,
       email,
-      password: hashedPassword, 
+      password: password, 
       firebaseUid: user.uid, 
     });
 
     await newUser.save();
-
-    const token = await user.getIdToken();
 
     res.status(201).json({ message: 'Usuario registrado con éxito', token });
   } catch (error) {
@@ -105,11 +101,11 @@ const login = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.uid }); // Busca el usuario por UID que viene del token
+    const user = await User.findOne({ firebaseUid: req.uid }); 
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
-    res.status(200).json(user); // Devuelve los detalles del usuario
+    res.status(200).json(user); 
   } catch (error) {
     console.error("Error al obtener el perfil:", error);
     res.status(500).json({ error: "Error al obtener el perfil del usuario" });
