@@ -105,6 +105,21 @@ const login = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   try {
+    const user = await User.findOne({ firebaseUid: req.uid }); // Busca el usuario por UID que viene del token
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.status(200).json(user); // Devuelve los detalles del usuario
+  } catch (error) {
+    console.error("Error al obtener el perfil:", error);
+    res.status(500).json({ error: "Error al obtener el perfil del usuario" });
+  }
+};
+
+module.exports = { login, register, getUserDetails };
+/*
+const getUserDetails = async (req, res) => {
+  try {
     const user = await User.findById(req.uid); // Usa el `uid` que viene del middleware de autenticación
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado" });
@@ -115,7 +130,7 @@ const getUserDetails = async (req, res) => {
     res.status(500).json({ error: "Error al obtener el perfil del usuario" });
   }
 };
-
+*/
 /*
 const getUserDetails = async (req, res) => {
   try {
