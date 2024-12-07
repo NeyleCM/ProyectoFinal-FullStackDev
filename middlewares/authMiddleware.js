@@ -8,7 +8,8 @@ const verifyToken = async (req, res, next) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
-    req.uid = decodedToken.uid; // Guardar el UID en la solicitud
+    req.uid = decodedToken.uid;
+    console.log("Token verificado correctamente, UID:", req.uid); 
     next();
   } catch (error) {
     console.error("Token verification failed:", error);
