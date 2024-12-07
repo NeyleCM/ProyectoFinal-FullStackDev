@@ -9,6 +9,6 @@ const {
 
 router.post("/login", login);
 router.post("/register", register);
-router.get("/profile", verifyToken, getUserDetails);
+router.get("/profile", getUserDetails);
 
 module.exports = router;
