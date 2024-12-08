@@ -113,10 +113,3 @@ exports.deleteProduct = async (req, res) => {
     return res.status(500).json({ error: "Error en la eliminación del producto" });
   }
 };
-/*
-exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
-  await Product.findByIdAndDelete(id);
-  res.status(204).send();
-};
-*/
