@@ -1,13 +1,5 @@
 const admin = require("firebase-admin");
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
-} else {
-  admin.app(); 
-}
-
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
@@ -15,6 +7,8 @@ const verifyToken = async (req, res, next) => {
   if (!token) return res.status(403).send("Token required");
 
   try {
+    console.log("Verificando token...");
+
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.uid = decodedToken.uid;
     console.log("Token verificado correctamente, UID:", req.uid); 
