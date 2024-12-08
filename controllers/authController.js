@@ -56,14 +56,7 @@ const login = async (req, res) => {
 
     const token = await user.getIdToken();
 
-    res.status(200).json({
-      message: "Inicio de sesión exitoso",
-      token,
-      user: {
-      uid: user.uid,
-      email: user.email,
-      }
-    });
+    res.status(200).json({ message: "Inicio de sesión exitoso", token, user });
   } catch (error) {
     console.error("Error al iniciar sesión:", error.message);
     res.status(401).json({ error: "Credenciales inválidas" });
