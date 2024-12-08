@@ -61,13 +61,10 @@ const productSchema = Joi.object({
 });
 
 exports.createProduct = async (req, res) => {
-  try {
-    const { error } = productSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
+  const { name, category, price, stock, image } = req.body;
 
-    const newProduct = new Product(req.body);    
+  try {
+    const newProduct = new Product({ name, category, price, stock, image });   
     const savedProduct = await newProduct.save();
     return res.status(201).json(savedProduct);
   } catch (error) {
@@ -78,7 +75,7 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, category, price, stock, image, size } = req.body;
+  const { name, category, price, stock, image } = req.body;
 
   try {
     const updatedProduct = await Product.findByIdAndUpdate(id, {

@@ -2,6 +2,8 @@
 
 https://proyectofinal-fullstackdev.onrender.com/
 
+Usuario: prueba@gmail.com   
+Contraseña: 12345678
 
 Backend
 
