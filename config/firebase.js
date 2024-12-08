@@ -1,13 +1,4 @@
-const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccount");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-module.exports = admin;
-
-/*require("dotenv").config();
+require("dotenv").config();
 const admin = require("firebase-admin");
 
 const serviceAccount = {
@@ -21,4 +12,12 @@ admin.initializeApp({
 });
 
 module.exports = admin;
-*/
+
+/*const admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccount");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+module.exports = admin;*/

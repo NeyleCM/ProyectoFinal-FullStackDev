@@ -1,7 +1,29 @@
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const { getAuth, signInWithEmailAndPassword } = require("firebase/auth");
 const User = require("../models/UserModel");
 
-const register = async (req, res) => {
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email y contraseña son requeridos" });
+    }
+
+    const auth = getAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const token = await user.getIdToken();
+
+    res.status(200).json({ message: "Inicio de sesión exitoso", token, user });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error.message);
+    res.status(401).json({ error: "Credenciales inválidas" });
+  }
+};
+
+module.exports = { login };
+
+/*const register = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
@@ -43,25 +65,6 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email y contraseña son requeridos" });
-    }
-
-    const auth = getAuth();
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const token = await user.getIdToken();
-
-    res.status(200).json({ message: "Inicio de sesión exitoso", token, user });
-  } catch (error) {
-    console.error("Error al iniciar sesión:", error.message);
-    res.status(401).json({ error: "Credenciales inválidas" });
-  }
-};
 
 const getUserDetails = async (req, res) => {
   try {
@@ -77,7 +80,7 @@ const getUserDetails = async (req, res) => {
 };
 
 module.exports = { login, register, getUserDetails };
-
+*/
 /*
 const register = async (req, res) => {
   try {
