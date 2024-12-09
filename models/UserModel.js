@@ -1,10 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: { 
-    type: String, 
-    required: true 
-  },
   email: { 
     type: String, 
     required: true, 
@@ -15,31 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6 
   },
-  firebaseUid: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
 
-
-/*
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
-  firebaseUid: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
-}, { timestamps: true });
-
-module.exports = mongoose.model('User', userSchema);
-*/
